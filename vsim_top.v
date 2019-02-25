@@ -15,12 +15,26 @@ module vsim_top();
 
   real phase;
   real freq;
+  real s;
+  real c;
+  reg gfsk_started;
+  initial begin
+    phase = 0;
+    gfsk_started = 0;
+  end
 
   always #ADC_SAMPLE_PERIOD begin
-    freq = (2000000 + gfsk_out * 125000) / 1000000000; // freq in Ghz so 1/freq is in ns
-    phase = phase + (2*PI*ADC_SAMPLE_PERIOD * freq);
-    I <= 16 * $cosine(phase);
-    Q <= 16 * $sine(phase);
+    if (gfsk_started) begin
+      freq = (2000000.0 + gfsk_out * 125000.0) / 1000000000.0; // freq in Ghz so 1/freq is in ns
+      phase = phase + (2*PI*ADC_SAMPLE_PERIOD * freq);
+      if (phase > 2*PI) begin
+        phase = phase - 2*PI;
+      end
+      I <= 16 + 10 * $sine(phase);
+      Q <= 16 + 10 * $cosine(phase);
+    end else if (gfsk_out != 3'd0) begin
+      gfsk_started = 1'b1;
+    end
   end
    
   reg clock = 1;
