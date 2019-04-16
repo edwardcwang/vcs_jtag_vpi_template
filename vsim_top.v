@@ -25,7 +25,7 @@ module vsim_top();
 
   always #ADC_SAMPLE_PERIOD begin
     if (gfsk_started) begin
-      freq = (2000000.0 + gfsk_out * 125000.0) / 1000000000.0; // freq in Ghz so 1/freq is in ns
+      freq = (2250000.0 + gfsk_out * 62500.0) / 1000000000.0; // freq in Ghz so 1/freq is in ns
       phase = phase + (2*PI*ADC_SAMPLE_PERIOD * freq);
       if (phase > 2*PI) begin
         phase = phase - 2*PI;
